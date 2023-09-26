@@ -10,10 +10,10 @@
 # To manually invoke the locally installed Go, use ./go
 
 # Go installation config.
-GO_VER=1.11.5
+GO_VER=1.21.1
 SYSTEM_NAME:=$(shell uname -s | tr '[:upper:]' '[:lower:]')
 SYSTEM_ARCH:=$(shell uname -m)
-GO_ARCH:=$(if $(filter x86_64, $(SYSTEM_ARCH)),amd64,386)
+GO_ARCH:=arm64
 GO_VERSION:=$(GO_VER).$(SYSTEM_NAME)-$(GO_ARCH)
 GO_DOWNLOAD_URL:=https://dl.google.com/go/go$(GO_VERSION).tar.gz
 GO_DIR:=go-$(GO_VER)

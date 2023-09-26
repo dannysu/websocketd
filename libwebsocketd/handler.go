@@ -26,6 +26,7 @@ type WebsocketdHandler struct {
 	Env      []string
 
 	command string
+	launched *LaunchedProcess
 }
 
 // NewWebsocketdHandler constructs the struct and parses all required things in it...
@@ -54,6 +55,8 @@ func NewWebsocketdHandler(s *WebsocketdServer, req *http.Request, log *LogScope)
 
 	wsh.Env = createEnv(wsh, req, log)
 
+	wsh.launched = s.launched
+
 	return wsh, nil
 }
 
@@ -63,16 +66,18 @@ func (wsh *WebsocketdHandler) accept(ws *websocket.Conn, log *LogScope) {
 	log.Access("session", "CONNECT")
 	defer log.Access("session", "DISCONNECT")
 
+  /*
 	launched, err := launchCmd(wsh.command, wsh.server.Config.CommandArgs, wsh.Env)
 	if err != nil {
 		log.Error("process", "Could not launch process %s %s (%s)", wsh.command, strings.Join(wsh.server.Config.CommandArgs, " "), err)
 		return
 	}
+  */
 
-	log.Associate("pid", strconv.Itoa(launched.cmd.Process.Pid))
+	log.Associate("pid", strconv.Itoa(wsh.launched.cmd.Process.Pid))
 
 	binary := wsh.server.Config.Binary
-	process := NewProcessEndpoint(launched, binary, log)
+	process := NewProcessEndpoint(wsh.launched, binary, log)
 	if cms := wsh.server.Config.CloseMs; cms != 0 {
 		process.closetime += time.Duration(cms) * time.Millisecond
 	}

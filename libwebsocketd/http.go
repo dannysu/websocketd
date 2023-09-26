@@ -29,13 +29,23 @@ type WebsocketdServer struct {
 	Config *Config
 	Log    *LogScope
 	forks  chan byte
+	launched *LaunchedProcess;
 }
 
 // NewWebsocketdServer creates WebsocketdServer struct with pre-determined config, logscope and maxforks limit
 func NewWebsocketdServer(config *Config, log *LogScope, maxforks int) *WebsocketdServer {
+	log.Info("server", "NewWebsocketdServer")
+	launched, err := launchCmd(config.CommandName, config.CommandArgs, []string{})
+	if err != nil {
+		log.Error("process", "Could not launch process %s %s (%s)", config.CommandName, strings.Join(config.CommandArgs, " "), err)
+		return nil
+	}
+	log.Info("server", "Process launched...")
+
 	mux := &WebsocketdServer{
 		Config: config,
 		Log:    log,
+		launched: launched,
 	}
 	if maxforks > 0 {
 		mux.forks = make(chan byte, maxforks)

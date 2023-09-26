@@ -60,7 +60,7 @@ func main() {
 	if config.UsingScriptDir {
 		log.Info("server", "Serving from directory      : %s", config.ScriptDir)
 	} else if config.CommandName != "" {
-		log.Info("server", "Serving using application   : %s %s", config.CommandName, strings.Join(config.CommandArgs, " "))
+		log.Info("server", "Serving using application   : %s %s", config.Config.CommandName, strings.Join(config.CommandArgs, " "))
 	}
 	if config.StaticDir != "" {
 		log.Info("server", "Serving static content from : %s", config.StaticDir)
